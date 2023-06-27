@@ -1,11 +1,13 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
-#include "matrix.hpp"
 #include <functional>
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include "matrix.hpp"
+#include "column.hpp"
+#include <math.h>
 
 using namespace std;
 
@@ -135,6 +137,7 @@ public:
         return (*this)/val;
     }
 
+    double interpolateLagrange(double x, int order = 3) const;
 
 private:
     void createMatrix(int size) {

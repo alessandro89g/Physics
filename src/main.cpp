@@ -44,25 +44,10 @@ int main()
     };
 
 
-
-
-    double E = NumerovBound(phi, g ,Ei, x0, x1, step,yi, yo);
-    cout << E << endl;
-    cout << phi.exportFunction("test.dat") << endl;
-
     NumerovInputs in(phi,Ei,{x0,x1,step},g,NumerovFunctionBoundaries(yi,yo));
 
-    E = NumerovBound(in);
+    double E = NumerovBound(in);
     cout << E << endl;
-    cout << phi.exportFunction("test2.dat") << endl;
-
-    double Es = 10.;
-    NumerovUnbound(phi,g,Es,x0,x1,step,yi);
-    phi.exportFunction("unbound.dat");
-
-    NumerovInputs in2(phi,Es,{x0,x1,step},g,NumerovFunctionBoundaries(yi,yo));
-    NumerovUnbound(in2);
-    phi.exportFunction("unbound2.dat");
-    cout << "END" <<endl;
+    phi.exportFunction("test2.dat");
 
 }
