@@ -147,7 +147,7 @@ private:
     int m_size = -1;
     bool m_x_filled = false;
     bool m_y_filled = false;
-    bool m_created_matrix;
+    bool m_created_matrix = false;
 
 };
 

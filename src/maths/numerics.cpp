@@ -37,15 +37,16 @@ double Numerics::scalarProduct(const Vector3 &v1, const Vector3 &v2)
     return v1*v2;
 }
 
-double Numerics::NumerovBound(Function &phi, const std::function<double (double)> &potential,
-                            double E, double M, const int l,
-                              const double x0, const double x1, const double h) {
+double Numerics::NumerovBound(Function &phi, const std::function<double (double, double)> &g,
+                            const double Ei, const double x0, const double x1, const double h,
+                              const std::function<double (double, double)> &yi,
+                              const std::function<double (double, double)> &yo) {
     const double cut = 3;
     const int n_cut = (double) cut/h;
     const double h12 = h*h/12;
     const double h512= h12*5;
-    const double hbc = Physics::Nuclear::hc;
     const double diff_der_max = 1.e-12;
+    double E = Ei;
 
     phi.fillFunctionX(h,x0,x1);
     const int size = phi.size();
@@ -74,37 +75,30 @@ double Numerics::NumerovBound(Function &phi, const std::function<double (double)
             delta2 = delta;
         }
 
-        function<double(double)> peff = [potential,M,E,l,hbc] (double r) -> double {
-            if (r==0)
-                return 0;
-            return (2*M*(E-potential(r))/pow(hbc,2)-((double)l*(l+1))/(r*r));
-        };
 
-
-        phii[0] = 0;
-        phii[1] = phi.x(1);
+        phii[0] = yi(0,E);
+        phii[1] = yi(h,E);
 
         for (int i = 2; i<=n_cut; ++i) {
             const double xP1 = phii.x(i);
-            const double PP1 = peff(xP1);
-            const double PN = peff(xP1-h);
-            const double PM1 = peff(xP1-2*h);
+            const double PP1 = g(xP1,E);
+            const double PN = g(xP1-h,E);
+            const double PM1 = g(xP1-2*h,E);
             phii[i] = 2*phii[i-1]*(1.-h512*PN)-phii[i-2]*(1.+h12*PM1);
             phii[i] = phii[i]/(1.+h12*PP1);
         }
 
         const double sizeo = phio.size();
-        const double k = sqrt(-2*M*E)/hbc;
-        phio[sizeo-1] = exp(-k*x1);
-        phio[sizeo-2] = exp(-k*(x1-h));
+        phio[sizeo-1] = yo(x1,E);
+        phio[sizeo-2] = yo(x1-h,E);
 
 
 
         for (int i = sizeo-3; i>=0; --i) {
             const double xM1 = phio.x(i);
-            const double PP1 = peff(xM1+2*h);
-            const double PN = peff(xM1+h);
-            const double PM1 = peff(xM1);
+            const double PP1 = g(xM1+2*h,E);
+            const double PN = g(xM1+h,E);
+            const double PM1 = g(xM1,E);
             phio[i] = 2*phio[i+1]*(1.-h512*PN)-phio[i+2]*(1.+h12*PP1);
             phio[i] = phio[i]/(1.+h12*PM1);
         }
@@ -132,7 +126,7 @@ double Numerics::NumerovBound(Function &phi, const std::function<double (double)
     } while(diff_der>diff_der_max && counter < 30);
 
 
-    for (int i=0; i<=size; i++)
+    for (int i=0; i<size; i++)
         if (i<=n_cut)
             phi[i] = phii[i];
         else
@@ -150,4 +144,66 @@ double Numerics::integrateConstantStep(Function &fun, double step) {
             sum += fun[i];
         sum *= step;
         return sum;
-    }
+}
+
+double Numerics::NumerovBound(NumerovInputs &inputs) {
+        Function& f = inputs.phi;
+        auto& g = inputs.g;
+        double Ei = inputs.Ei;
+        double x0 = inputs.x.x0;
+        double x1 = inputs.x.x1;
+        double h = inputs.x.step;
+        auto& yi = inputs.y_boundaries.yi;
+        auto& yo = inputs.y_boundaries.yo;
+
+
+        return NumerovBound(f,g,Ei,x0,x1,h,yi,yo);
+}
+
+std::function<double(double,double)> Numerics::NumerovGeneratingFunction(const std::function<double (double)> &potential, int orbital_angular_momentum,
+                                    double mass) {
+        return [mass, orbital_angular_momentum, potential](double r, double E) -> double {
+            return 2*mass*(E-potential(r))/(Physics::Nuclear::hc*Physics::Nuclear::hc);
+        };
+}
+
+void Numerics::NumerovUnbound(Function &phi, const std::function<double (double, double)> &g,
+                              const double E, const double x0, const double x1, const double h,
+                              const std::function<double (double, double)> &yi)
+{
+        if (E<=0)
+            abort();
+
+        const double h12 = h*h/12;
+        const double h512= h12*5;
+
+        phi.fillFunctionX(h,x0,x1);
+        const int size = phi.size();
+
+        phi[0] = yi(0,E);
+        phi[1] = yi(h,E);
+
+        for (int i = 2; i<size; ++i) {
+            const double xP1 = phi.x(i);
+            const double PP1 = g(xP1,E);
+            const double PN = g(xP1-h,E);
+            const double PM1 = g(xP1-2*h,E);
+            phi[i] = 2*phi[i-1]*(1.-h512*PN)-phi[i-2]*(1.+h12*PM1);
+            phi[i] = phi[i]/(1.+h12*PP1);
+        }
+}
+
+void Numerics::NumerovUnbound(NumerovInputs &inputs)
+{
+        Function& f = inputs.phi;
+        auto& g = inputs.g;
+        double Ei = inputs.Ei;
+        double x0 = inputs.x.x0;
+        double x1 = inputs.x.x1;
+        double h = inputs.x.step;
+        auto& yi = inputs.y_boundaries.yi;
+        auto& yo = inputs.y_boundaries.yo;
+
+
+        NumerovUnbound(f,g,Ei,x0,x1,h,yi);
+}

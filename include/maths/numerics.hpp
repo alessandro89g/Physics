@@ -50,10 +50,43 @@ namespace Numerics {
         return kp1;
     }
 
+    struct NumerovX {
+        const double x0;
+        const double x1;
+        const double step;
+    };
+    struct NumerovFunctionBoundaries  {
+        NumerovFunctionBoundaries(const std::function<double (double, double)>& yi,
+                                  const std::function<double (double, double)>& yo) : yi(yi), yo(yo){}
+        const std::function<double (double, double)> yi;
+        const std::function<double (double, double)> yo;
+    };
 
-    double NumerovBound(Function& phi, const std::function<double(double)> &potential,
-                      double E, double M, const int l,
-                        const double x0, const double x1, const double h);
+    struct NumerovInputs {
+        NumerovInputs(Function& phi, double Ei, NumerovX x, std::function<double(double,double)> g,
+                      NumerovFunctionBoundaries y_boundaries) : phi(phi), Ei(Ei), x(x), g(g), y_boundaries(y_boundaries){}
+
+        Function phi;
+        double Ei;
+        NumerovX x;
+        std::function<double(double,double)> g;
+        NumerovFunctionBoundaries y_boundaries;
+    };
+
+    std::function<double(double,double)> NumerovGeneratingFunction(
+        const std::function<double(double)>& potential, int orbital_angular_momentum, double mass);
+
+    double NumerovBound(Function& phi, const std::function<double (double, double)> &g,
+                      const double Ei, const double x0, const double x1, const double h,
+                        const std::function<double (double, double)> &yi,
+                        const std::function<double (double, double)> &yo);
+
+    double NumerovBound(NumerovInputs& inputs);
+
+    void NumerovUnbound(Function& phi, const std::function<double (double, double)> &g,
+                        const double E, const double x0, const double x1, const double h,
+                        const std::function<double (double, double)> &yi);
+    void NumerovUnbound(NumerovInputs& inputs);
 
     double integrateConstantStep(Function &fun, double step);
 
