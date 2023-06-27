@@ -147,7 +147,6 @@ double Numerics::integrateConstantStep(Function &fun, double step) {
 }
 
 double Numerics::NumerovBound(NumerovInputs &inputs) {
-        Function& f = inputs.phi;
         auto& g = inputs.g;
         double Ei = inputs.Ei;
         double x0 = inputs.x.x0;
@@ -157,7 +156,7 @@ double Numerics::NumerovBound(NumerovInputs &inputs) {
         auto& yo = inputs.y_boundaries.yo;
 
 
-        return NumerovBound(f,g,Ei,x0,x1,h,yi,yo);
+        return NumerovBound(inputs.phi,g,Ei,x0,x1,h,yi,yo);
 }
 
 std::function<double(double,double)> Numerics::NumerovGeneratingFunction(const std::function<double (double)> &potential, int orbital_angular_momentum,

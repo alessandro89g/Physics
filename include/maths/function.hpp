@@ -44,6 +44,7 @@ public:
         createMatrix(m_size);
         fillFunction(x,y);
     }
+    Function(const Function& other) = delete;
 
     void fillFunctionX(vector<double> x) {
         if (!m_created_matrix) {
@@ -120,6 +121,11 @@ public:
     double& operator[] (int index) {
         return (m_function.getMatrix()[1][index]);
     }
+
+    double operator() (double x) const {
+        return interpolateLagrange(x);
+    }
+
     Function &operator * (double val) {
         for (int i=0; i<m_size; i++)
             m_function[1][i] *= val;

@@ -66,7 +66,7 @@ namespace Numerics {
         NumerovInputs(Function& phi, double Ei, NumerovX x, std::function<double(double,double)> g,
                       NumerovFunctionBoundaries y_boundaries) : phi(phi), Ei(Ei), x(x), g(g), y_boundaries(y_boundaries){}
 
-        Function phi;
+        Function &phi;
         double Ei;
         NumerovX x;
         std::function<double(double,double)> g;

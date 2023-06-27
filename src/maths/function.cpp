@@ -13,8 +13,11 @@ double Function::interpolateLagrange(double x, int order) const
 
     int pos;
     for (pos=0; pos<m_function.cols(); ++pos) {
-        if (m_function[0][pos]<=x && m_function[0][pos+1]>x)
+        if (m_function[0][pos]<=x && m_function[0][pos+1]>x) {
+            if (m_function[0][pos]==x)
+                return m_function[1][pos];
             break;
+        }
     }
     pos--;
 
