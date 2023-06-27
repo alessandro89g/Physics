@@ -68,6 +68,10 @@ public:
     Matrix inverseMatrix() const;
     void invert();
 
+    operator double** () {
+        return m_matrix;
+    }
+
 protected:
     double **m_matrix;
     double *m_line_matrix;

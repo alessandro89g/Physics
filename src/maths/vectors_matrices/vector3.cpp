@@ -1,4 +1,5 @@
 #include "vector3.hpp"
+#include "numerics.hpp"
 
 Vector3::Vector3(): Row(3) {}
 

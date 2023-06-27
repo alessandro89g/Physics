@@ -28,27 +28,7 @@ namespace Numerics {
         a = c;
     }
 
-    template<typename F>
-    double findZero(const F& fun, double kp) {
-        double kp0 = kp;
-        double de0 = (*fun)(kp0);
-
-        double kp1 = kp*1.1;
-        double de1 = (*fun)(kp1);
-
-        do {
-            kp = kp1 - de1*(kp1-kp0)/(de1-de0);
-            double de = (*fun)(kp);
-            if (abs(de1)<abs(de0)) {
-                kp0 = kp1;
-                de0 = de1;
-            }
-            kp1 = kp;
-            de1 = de;
-
-        } while(abs(de1)>1.e-9);
-        return kp1;
-    }
+    double findZero(const std::function<double(double)>& fun, double kp);
 
     struct NumerovX {
         const double x0;
