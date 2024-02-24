@@ -1,11 +1,12 @@
 #ifndef ANGLE_HPP
 #define ANGLE_HPP
 
-#include <math.h>
+#include <cmath>
 
 class Angle {
 public:
-    Angle();
+    Angle() : m_rad(0) {
+    }
     Angle(double angle_rad) : m_rad(angle_rad) {
     }
     Angle(const Angle& angle) = default;
@@ -32,7 +33,7 @@ public:
 
 private:
     double m_rad;
-    constexpr static double pi = 4*atan(1.);
+    constexpr static double pi = 3.141592653589793;
 };
 
 
