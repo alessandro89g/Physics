@@ -3,10 +3,10 @@
 #include <iomanip>
 #include <random>
 
-#include "physics.hpp"
-#include "numerics.hpp"
-#include "derivative.hpp"
-#include "function.hpp"
+#include "../include/physics/physics.hpp"
+#include "../include/maths/numerics.hpp"
+#include "../include/maths/derivative.hpp"
+#include "../include/maths/function.hpp"
 
 
 using namespace std;

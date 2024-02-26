@@ -1,5 +1,5 @@
-#include "function.hpp"
-#include "column.hpp"
+#include "../../include/maths/function.hpp"
+#include "../../include/maths/vectors_matrices/column.hpp"
 
 Function::Function()
 {

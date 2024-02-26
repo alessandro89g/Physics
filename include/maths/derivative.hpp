@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include "matrix.hpp"
-#include <math.h>
-#include "numerics.hpp"
-#include "column.hpp"
+#include <cmath>
+#include "../../include/maths/vectors_matrices/matrix.hpp"
+#include "../../include/maths/vectors_matrices/column.hpp"
+#include "../../include/maths/numerics.hpp"
 
 namespace Numerics {
 #define NMAX 200

@@ -1,6 +1,6 @@
-#include "fourmomentum.hpp"
-#include "matrix4.hpp"
-#include "vector3.hpp"
+#include "../../../include/physics/four_vectors_tensors/fourmomentum.hpp"
+#include "../../../include/physics/four_vectors_tensors/matrix4.hpp"
+#include "../../../include/maths/vectors_matrices/vector3.hpp"
 
 FourMomentum::FourMomentum()
 {

@@ -1,7 +1,7 @@
-#include "numerics.hpp"
-#include "vector3.hpp"
-#include "physics_constants.hpp"
-#include "derivative.hpp"
+#include "../../include/maths/vectors_matrices/vector3.hpp"
+#include "../../include/maths/derivative.hpp"
+#include "../../include/maths/numerics.hpp"
+#include "../../include/physics/physics_constants.hpp"
 
 #define watch(x) cout << (#x) << " is " << (x) << endl
 
@@ -201,7 +201,7 @@ void Numerics::NumerovUnbound(NumerovInputs &inputs)
         double x1 = inputs.x.x1;
         double h = inputs.x.step;
         auto& yi = inputs.y_boundaries.yi;
-        auto& yo = inputs.y_boundaries.yo;
+        //auto& yo = inputs.y_boundaries.yo;
 
 
         NumerovUnbound(f,g,Ei,x0,x1,h,yi);

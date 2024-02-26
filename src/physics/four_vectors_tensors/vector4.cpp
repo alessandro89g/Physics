@@ -1,6 +1,6 @@
-#include "vector4.hpp"
-#include "column.hpp"
-#include "vector3.hpp"
+#include "../../../include/maths/vectors_matrices/column.hpp"
+#include "../../../include/maths/vectors_matrices/vector3.hpp"
+#include "../../../include/physics/four_vectors_tensors/vector4.hpp"
 
 Vector4::Vector4() : Row(4)
 {}
@@ -63,11 +63,12 @@ Vector3 Vector4::vector3() const {
 
 double Vector4::thetaDeg() const {
     double z_over_r = (*this)[3]/norm();
-    if (abs(z_over_r)==1)
+    if (abs(z_over_r)==1){
         if (z_over_r==1)
             return 0;
         else
             return 180;
+    }
     return acos(z_over_r)/acos(-1.)*180.;
 }
 

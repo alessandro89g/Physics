@@ -5,9 +5,9 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "matrix.hpp"
-#include "column.hpp"
-#include <math.h>
+#include <cmath>
+#include "../../include/maths/vectors_matrices/matrix.hpp"
+#include "../../include/maths/vectors_matrices/column.hpp"
 
 using namespace std;
 

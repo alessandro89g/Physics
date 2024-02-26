@@ -73,9 +73,10 @@ public:
     }
 
 protected:
-    double **m_matrix;
+    int m_rows;
+    int m_cols;
     double *m_line_matrix;
-    int m_rows, m_cols;
+    double **m_matrix;
 
 protected:
     void createMatrix();

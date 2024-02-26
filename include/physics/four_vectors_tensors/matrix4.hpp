@@ -1,8 +1,8 @@
 #ifndef MATRIX4_HPP
 #define MATRIX4_HPP
 
-#include "matrix.hpp"
-#include "vector4.hpp"
+#include "../../../include/maths/vectors_matrices/matrix.hpp"
+#include "../../../include/physics/four_vectors_tensors/vector4.hpp"
 
 class Matrix4 : public Matrix {
 public:

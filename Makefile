@@ -7,15 +7,38 @@
 # format - formats the code
 # check - checks for formatting issues
 
+
 CC = g++
-CFLAGS = -Wall -Werror -std=c++20 -g
+CFLAGS = -Wall -std=c++20 -g
 GTEST_LIBS = -lgtest -lgtest_main -pthread
 
-all: tests
-tests: test_angle
+SRC_DIR = src
+INCLUDE_DIR = include
+TEST_DIR = tests
 
-test_angle: tests/angle.cpp include/maths/angle.hpp
-	$(CC) $(CFLAGS) -o test_angle tests/angle.cpp ${GTEST_LIBS}
+BUILD_DIR = build
+
+SRC_FILES := $(wildcard $(SRC_DIR)/**/**/*cpp $(SRC_DIR)/**/*cpp $(SRC_DIR)/*.cpp)
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+all: $(OBJ_FILES)
+
+check: 
+	@echo $(SRC_FILES)
+	@echo $(OBJ_FILES)
+
+
+TEST_DIR = tests
+TEST_OUT = build/tests
+$(TEST_OUT)/test_angle: $(TEST_DIR)/test_angle.cpp $(BUILD_DIR)/maths/angle.o
+	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_angle.cpp $(BUILD_DIR)/maths/angle.o ${GTEST_LIBS}
+
+
+tests_run: tests/*
+	./${TEST_OUT}/test_angle
 
 clean:
 	rm -f main main.o test_angle

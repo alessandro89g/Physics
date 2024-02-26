@@ -1,4 +1,4 @@
-#include "derivative.hpp"
+#include "../../include/maths/derivative.hpp"
 
 namespace Numerics {
 Matrix Derivative::ms_coefficients;

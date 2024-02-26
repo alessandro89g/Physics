@@ -1,6 +1,6 @@
 #ifndef VECTOR4_HPP
 #define VECTOR4_HPP
-#include "row.hpp"
+#include "../../../include/maths/vectors_matrices/row.hpp"
 
 class Vector3;
 

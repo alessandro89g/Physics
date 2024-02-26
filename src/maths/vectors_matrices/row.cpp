@@ -1,5 +1,5 @@
-#include "row.hpp"
-#include "column.hpp"
+#include "../../../include/maths/vectors_matrices/row.hpp"
+#include "../../../include/maths/vectors_matrices/column.hpp"
 
 
 Row::Row(int cols) {

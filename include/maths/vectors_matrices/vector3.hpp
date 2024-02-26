@@ -1,9 +1,9 @@
 #ifndef VECTOR3_HPP
 #define VECTOR3_HPP
-#include "row.hpp"
-#include "math.h"
-#include "angle.hpp"
-#include "numerics.hpp"
+#include <cmath>
+#include "../../../include/maths/vectors_matrices/row.hpp"
+#include "../../../include/maths/angle.hpp"
+#include "../../../include/maths/numerics.hpp"
 
 
 class Vector3 : public Row

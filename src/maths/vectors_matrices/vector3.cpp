@@ -1,5 +1,5 @@
-#include "vector3.hpp"
-#include "numerics.hpp"
+#include "../../../include/maths/vectors_matrices/vector3.hpp"
+#include "../../../include/maths/numerics.hpp"
 
 Vector3::Vector3(): Row(3) {}
 
@@ -33,11 +33,12 @@ Vector3 Vector3::direction() const {
 
 double Vector3::thetaDeg() const {
     double z_over_r = (*this)[3]/norm();
-    if (abs(z_over_r)==1)
+    if (abs(z_over_r)==1){
         if (z_over_r==1)
             return 0;
         else
             return 180;
+    }
     return acos(z_over_r)/acos(-1.)*180.;
 }
 

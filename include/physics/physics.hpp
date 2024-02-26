@@ -1,9 +1,9 @@
 #ifndef PHYSICS_HPP
 #define PHYSICS_HPP
-#include "physics_constants.hpp"
-#include "fourmomentum.hpp"
-#include "matrix4.hpp"
-#include "unitvector.hpp"
+#include "../../include/physics/physics_constants.hpp"
+#include "../../include/physics/four_vectors_tensors/fourmomentum.hpp"
+#include "../../include/physics/four_vectors_tensors/matrix4.hpp"
+#include "../../include/maths/vectors_matrices/unitvector.hpp"
 
 namespace Physics {
     namespace Relativity {

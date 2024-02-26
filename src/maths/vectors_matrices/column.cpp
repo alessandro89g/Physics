@@ -1,6 +1,6 @@
-#include "column.hpp"
-#include "row.hpp"
-#include "matrix.hpp"
+#include "../../../include/maths/vectors_matrices/column.hpp"
+#include "../../../include/maths/vectors_matrices/row.hpp"
+#include "../../../include/maths/vectors_matrices/matrix.hpp"
 
 Column::Column(int rows) {
     m_rows = rows;

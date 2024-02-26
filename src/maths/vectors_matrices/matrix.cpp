@@ -1,6 +1,6 @@
-#include "matrix.hpp"
-#include "row.hpp"
-#include "column.hpp"
+#include "../../../include/maths/vectors_matrices/matrix.hpp"
+#include "../../../include/maths/vectors_matrices/row.hpp"
+#include "../../../include/maths/vectors_matrices/column.hpp"
 
 Matrix::Matrix(): m_rows(0), m_cols(0), m_line_matrix(nullptr), m_matrix(nullptr)
 {
@@ -49,8 +49,8 @@ Matrix::Matrix(const Matrix &other) : m_rows(other.m_rows), m_cols(other.m_cols)
     copyMatrix(other.m_matrix, m_rows, m_cols);
 }
 
-Matrix::Matrix(Matrix &&other) : m_rows(other.m_rows), m_cols(other.m_cols),
-    m_matrix(other.m_matrix), m_line_matrix(other.m_line_matrix)
+Matrix::Matrix(Matrix &&other) : m_rows(other.m_rows), m_cols(other.m_cols)
+                            , m_line_matrix(other.m_line_matrix), m_matrix(other.m_matrix)
 {
     other.m_line_matrix = nullptr;
     other.m_matrix = nullptr;
@@ -186,7 +186,7 @@ bool Matrix::operator ==(const Matrix &other) const {
 }
 
 bool Matrix::sameSize(const Matrix &other) const {
-    if (m_cols!=other.m_cols || m_rows!=m_rows)
+    if (m_cols!=other.m_cols || m_rows!=other.m_rows)
         return false;
     return true;
 }
