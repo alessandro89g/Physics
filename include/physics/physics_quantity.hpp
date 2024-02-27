@@ -2,7 +2,7 @@
 #define PHYSICS_QUANTITY_HPP
 
 #pragma once
-#include <vector>
+#include <set>
 #include <optional>
 #include "physics_units.hpp"
 
@@ -13,15 +13,15 @@ namespace Physics {
     {
     private:
         T _value;
-        std::vector<Unit> _units;
+        std::set<Unit> _units;
 
     public:
         PhysicsQuantity(T value);
         explicit PhysicsQuantity(T value, Unit unit);
-        explicit PhysicsQuantity(T value, std::vector<Unit> units);
+        explicit PhysicsQuantity(T value, std::set<Unit> units);
 
         T value() const;
-        std::vector<Unit> units() const;
+        std::set<Unit> units() const;
 
         PhysicsQuantity operator+(const PhysicsQuantity& other) const;
         PhysicsQuantity operator-(const PhysicsQuantity& other) const;
@@ -88,7 +88,7 @@ namespace Physics {
     PhysicsQuantity<T>::PhysicsQuantity(T value, Unit unit) : _value(value), _units({unit}) {}
 
     template <class T>
-    PhysicsQuantity<T>::PhysicsQuantity(T value, std::vector<Unit> units) : _value(value), _units(units) {}
+    PhysicsQuantity<T>::PhysicsQuantity(T value, std::set<Unit> units) : _value(value), _units(units) {}
 //<-Contructors
 
 //->Setters and Getters
@@ -96,7 +96,7 @@ namespace Physics {
     T PhysicsQuantity<T>::value() const { return _value; }
     
     template <class T>
-    std::vector<Unit> PhysicsQuantity<T>::units() const { return _units; }
+    std::set<Unit> PhysicsQuantity<T>::units() const { return _units; }
 //<-Setters and Getters
 
 //->Operators
@@ -118,13 +118,13 @@ namespace Physics {
 
     template <class T>
     PhysicsQuantity<T> PhysicsQuantity<T>::operator*(const PhysicsQuantity& other) const {
-        std::vector<Unit> new_units = _units * other._units;
+        std::set<Unit> new_units = _units * other._units;
         return PhysicsQuantity(_value * other._value, new_units);
     }
 
     template <class T>
     PhysicsQuantity<T> PhysicsQuantity<T>::operator/(const PhysicsQuantity& other) const {
-        std::vector<Unit> new_units = _units / other._units;
+        std::set<Unit> new_units = _units / other._units;
         return PhysicsQuantity(_value / other._value, new_units);
     }
 

@@ -7,19 +7,16 @@ using Physics::Unit;
 TEST(PhysicsQuantity, Constructors) {
     PhysicsQuantity<double> quantity1(10);
     PhysicsQuantity<double> quantity2(10, Unit::m);
-    PhysicsQuantity<double> quantity3(10, std::vector<Unit>({Unit::m, Unit::s}));
+    PhysicsQuantity<double> quantity3(10, std::set<Unit>({Unit(Unit::m), Unit(Unit::s,-1)}));
 
     EXPECT_EQ(quantity1.value(), 10);
     EXPECT_EQ(quantity1.units().size(), 0);
-
     EXPECT_EQ(quantity2.value(), 10);
     EXPECT_EQ(quantity2.units().size(), 1);
-    EXPECT_EQ(quantity2.units()[0], Unit::m);
-
+    EXPECT_EQ(quantity2.units(), std::set<Unit>({Unit::m}));
     EXPECT_EQ(quantity3.value(), 10);
     EXPECT_EQ(quantity3.units().size(), 2);
-    EXPECT_EQ(quantity3.units()[0], Unit::m);
-    EXPECT_EQ(quantity3.units()[1], Unit::s);
+    EXPECT_EQ(quantity3.units(), std::set<Unit>({Unit(Unit::m), Unit(Unit::s,-1)}));
 }
 
 TEST(PhysicsQuantity, AddTwoQuantities) {
@@ -27,10 +24,10 @@ TEST(PhysicsQuantity, AddTwoQuantities) {
     PhysicsQuantity<double> quantity2(20, Unit::m);
 
     PhysicsQuantity<double> result = quantity1 + quantity2;
-
+    
     EXPECT_EQ(result.value(), 30);
     EXPECT_EQ(result.units().size(), 1);
-    EXPECT_EQ(result.units()[0], Unit::m);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
 }
 
 TEST(PhysicsQuantity, AddTwoQuantitiesDifferentUnits) {
@@ -52,10 +49,10 @@ TEST(PhysicsQuantity, SubtractTwoQuantities) {
     PhysicsQuantity<double> quantity2(20, Unit::m);
 
     PhysicsQuantity<double> result = quantity1 - quantity2;
-
+    
     EXPECT_EQ(result.value(), -10);
     EXPECT_EQ(result.units().size(), 1);
-    EXPECT_EQ(result.units()[0], Unit::m);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
 }
 
 TEST(PhysicsQuantity, SubtractTwoQuantitiesDifferentUnits) {
@@ -77,11 +74,10 @@ TEST(PhysicsQuantity, MultiplyTwoQuantities) {
     PhysicsQuantity<double> quantity2(20, Unit::s);
 
     PhysicsQuantity<double> result = quantity1 * quantity2;
-
+    
     EXPECT_EQ(result.value(), 200);
     EXPECT_EQ(result.units().size(), 2);
-    EXPECT_EQ(result.units()[0], Unit::m);
-    EXPECT_EQ(result.units()[1], Unit::s);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m, Unit::s}));
 }
 
 TEST(PhysicsQuantity, MultiplyByScalar) {
@@ -92,7 +88,7 @@ TEST(PhysicsQuantity, MultiplyByScalar) {
 
     EXPECT_EQ(result.value(), 200);
     EXPECT_EQ(result.units().size(), 1);
-    EXPECT_EQ(result.units()[0], Unit::m);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
 }
 
 TEST(PhysicsQuantity, DivideTwoQuantities) {
@@ -103,8 +99,7 @@ TEST(PhysicsQuantity, DivideTwoQuantities) {
 
     EXPECT_EQ(result.value(), 0.5);
     EXPECT_EQ(result.units().size(), 2);
-    EXPECT_EQ(result.units()[0], Unit(Unit::m));
-    EXPECT_EQ(result.units()[1], Unit(Unit::s, -1));
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m, Unit(Unit::s,-1)}));
 }
 
 TEST(PhysicsQuantity, DivideByScalar) {
@@ -115,7 +110,7 @@ TEST(PhysicsQuantity, DivideByScalar) {
 
     EXPECT_EQ(result.value(), 0.5);
     EXPECT_EQ(result.units().size(), 1);
-    EXPECT_EQ(result.units()[0], Unit::m);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit(Unit::m)}));
 }
 
 TEST(PhysicsQuantity, UnaryMinus) {
@@ -125,7 +120,7 @@ TEST(PhysicsQuantity, UnaryMinus) {
 
     EXPECT_EQ(result.value(), -10);
     EXPECT_EQ(result.units().size(), 1);
-    EXPECT_EQ(result.units()[0], Unit::m);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
 }
 
 TEST(PhysicsQuantity, PrintQuantity) {
@@ -137,7 +132,7 @@ TEST(PhysicsQuantity, PrintQuantity) {
 }
 
 TEST(PhysicsQuantity, PrintQuantityWithMultipleUnits) {
-    PhysicsQuantity<double> quantity1(10, std::vector<Unit>({Unit(Unit::m), Unit(Unit::s,-1)}));
+    PhysicsQuantity<double> quantity1(10, std::set<Unit>({Unit(Unit::m), Unit(Unit::s,-1)}));
 
     std::string result = quantity1.toString();
 
@@ -145,7 +140,7 @@ TEST(PhysicsQuantity, PrintQuantityWithMultipleUnits) {
 }
 
 TEST(PhysicsQuantity, PrintQuantityWithMultipleUnitsAndPowers) {
-    PhysicsQuantity<double> quantity1(10, std::vector<Unit>({Unit(Unit::m, 2), Unit(Unit::s,-1)}));
+    PhysicsQuantity<double> quantity1(10, std::set<Unit>({Unit(Unit::m, 2), Unit(Unit::s,-1)}));
 
     std::string result = quantity1.toString();
 
@@ -174,7 +169,7 @@ TEST(PhysicsQuantity, MultiplyDoubleOnTheLeft) {
 
     EXPECT_EQ(result.value(), 200);
     EXPECT_EQ(result.units().size(), 1);
-    EXPECT_EQ(result.units()[0], Unit::m);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
 }
 
 TEST(PhysicsQuantity, DivideDoubleOnTheLeft) {
@@ -185,7 +180,7 @@ TEST(PhysicsQuantity, DivideDoubleOnTheLeft) {
 
     EXPECT_EQ(result.value(), 2);
     EXPECT_EQ(result.units().size(), 1);
-    EXPECT_EQ(result.units()[0], Unit(Unit::m, -1));
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit(Unit::m, -1)}));
 }
 
 TEST(PhysicsQuantity, AddDoubleToUnitlessQuantity) {
@@ -228,18 +223,18 @@ TEST(PhysicsQuantity, LessThanOperator) {
     PhysicsQuantity<double> quantity1(10, Unit::m);
     PhysicsQuantity<double> quantity2(20, Unit::m);
     PhysicsQuantity<double> quantity3(10, Unit::s);
-    PhysicsQuantity<double> quantity4(20, Unit::s);
+    PhysicsQuantity<double> quantity4(5, Unit::m);
 
     EXPECT_TRUE(quantity1 < quantity2);
     EXPECT_THROW(quantity1 < quantity3, std::invalid_argument);
-    EXPECT_TRUE(quantity1 < quantity4);
+    EXPECT_FALSE(quantity1 < quantity4);
 }
 
 TEST(PhysicsQuantity, LessThanOrEqualOperator) {
     PhysicsQuantity<double> quantity1(10, Unit::m);
     PhysicsQuantity<double> quantity2(20, Unit::m);
     PhysicsQuantity<double> quantity3(10, Unit::s);
-    PhysicsQuantity<double> quantity4(20, Unit::s);
+    PhysicsQuantity<double> quantity4(10, Unit::m);
 
     EXPECT_TRUE(quantity1 <= quantity2);
     EXPECT_THROW(quantity1 <= quantity3, std::invalid_argument);
@@ -250,18 +245,18 @@ TEST(PhysicsQuantity, GreaterThanOperator) {
     PhysicsQuantity<double> quantity1(10, Unit::m);
     PhysicsQuantity<double> quantity2(20, Unit::m);
     PhysicsQuantity<double> quantity3(10, Unit::s);
-    PhysicsQuantity<double> quantity4(20, Unit::s);
+    PhysicsQuantity<double> quantity4(5, Unit::m);
 
     EXPECT_TRUE(quantity2 > quantity1);
     EXPECT_THROW(quantity3 > quantity1, std::invalid_argument);
-    EXPECT_TRUE(quantity4 > quantity1);
+    EXPECT_FALSE(quantity4 > quantity1);
 }
 
 TEST(PhysicsQuantity, GreaterThanOrEqualOperator) {
     PhysicsQuantity<double> quantity1(10, Unit::m);
     PhysicsQuantity<double> quantity2(20, Unit::m);
     PhysicsQuantity<double> quantity3(10, Unit::s);
-    PhysicsQuantity<double> quantity4(20, Unit::s);
+    PhysicsQuantity<double> quantity4(10, Unit::m);
 
     EXPECT_TRUE(quantity2 >= quantity1);
     EXPECT_THROW(quantity3 >= quantity1, std::invalid_argument);
@@ -276,7 +271,7 @@ TEST(PhysicsQuantity, AddAssignOperator) {
 
     EXPECT_EQ(quantity1.value(), 30);
     EXPECT_EQ(quantity1.units().size(), 1);
-    EXPECT_EQ(quantity1.units()[0], Unit::m);
+    EXPECT_EQ(quantity1.units(), std::set<Unit>({Unit::m}));
 }
 
 TEST(PhysicsQuantity, SubtractAssignOperator) {
@@ -287,7 +282,7 @@ TEST(PhysicsQuantity, SubtractAssignOperator) {
 
     EXPECT_EQ(quantity1.value(), -10);
     EXPECT_EQ(quantity1.units().size(), 1);
-    EXPECT_EQ(quantity1.units()[0], Unit::m);
+    EXPECT_EQ(quantity1.units(), std::set<Unit>({Unit::m}));
 }
 
 TEST(PhysicsQuantity, MultiplyAssignOperator) {
@@ -298,8 +293,7 @@ TEST(PhysicsQuantity, MultiplyAssignOperator) {
 
     EXPECT_EQ(quantity1.value(), 200);
     EXPECT_EQ(quantity1.units().size(), 2);
-    EXPECT_EQ(quantity1.units()[0], Unit::m);
-    EXPECT_EQ(quantity1.units()[1], Unit::s);
+    EXPECT_EQ(quantity1.units(), std::set<Unit>({Unit::m, Unit::s}));
 }
 
 TEST(PhysicsQuantity, DivideAssignOperator) {
@@ -310,6 +304,51 @@ TEST(PhysicsQuantity, DivideAssignOperator) {
 
     EXPECT_EQ(quantity1.value(), 0.5);
     EXPECT_EQ(quantity1.units().size(), 2);
-    EXPECT_EQ(quantity1.units()[0], Unit(Unit::m));
-    EXPECT_EQ(quantity1.units()[1], Unit(Unit::s, -1));
+    EXPECT_EQ(quantity1.units(), std::set<Unit>({Unit::m, Unit(Unit::s,-1)}));
+}
+
+TEST(PhysicsQuantity, MultiplyTwoQuantitiesWithThreeDifferentUnitsAndPowersAndUnitOrder) {
+    PhysicsQuantity<double> quantity1(10, std::set<Unit>({Unit(Unit::m, 2), Unit(Unit::s), Unit(Unit::kg, 3)}));
+    PhysicsQuantity<double> quantity2(20, std::set<Unit>({Unit(Unit::s, 5), Unit(Unit::m,-1), Unit(Unit::kg, -1)}));
+
+    PhysicsQuantity<double> result = quantity1 * quantity2;
+
+    EXPECT_EQ(result.value(), 200);
+    EXPECT_EQ(result.units().size(), 3);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m, Unit(Unit::s,6), Unit(Unit::kg,2)}));
+} 
+
+TEST(PhysicsQuantity, DivideTwoQuantitiesWithThreeDifferentUnitsAndPowersAndUnitOrder) {
+    PhysicsQuantity<double> quantity1(10, std::set<Unit>({Unit(Unit::m, 2), Unit(Unit::s), Unit(Unit::kg, 3)}));
+    PhysicsQuantity<double> quantity2(20, std::set<Unit>({Unit(Unit::s, 5), Unit(Unit::m,-1), Unit(Unit::kg, -1)}));
+
+    PhysicsQuantity<double> result = quantity1 / quantity2;
+
+    EXPECT_EQ(result.value(), 0.5);
+    EXPECT_EQ(result.units().size(), 3);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit(Unit::m, 3), Unit(Unit::s,-4), Unit(Unit::kg,4)}));
+}
+
+TEST(PhysicsQuantity, AddTwoQuantiesWithThreeDifferentUnitsAndPowersAndUnitOrder) {
+    PhysicsQuantity<double> quantity1(10, std::set<Unit>({Unit(Unit::m, 2), Unit(Unit::s), Unit(Unit::kg, 3)}));
+    PhysicsQuantity<double> quantity2(20, std::set<Unit>({Unit(Unit::s, 5), Unit(Unit::m,-1), Unit(Unit::kg, -1)}));
+
+    EXPECT_THROW(quantity1 + quantity2, std::invalid_argument);
+}
+
+TEST(PhysicsQuantity, SubtractTwoQuantiesWithThreeDifferentUnitsAndPowersAndUnitOrder) {
+    PhysicsQuantity<double> quantity1(10, std::set<Unit>({Unit(Unit::m, 2), Unit(Unit::s), Unit(Unit::kg, 3)}));
+    PhysicsQuantity<double> quantity2(20, std::set<Unit>({Unit(Unit::s, 5), Unit(Unit::m,-1), Unit(Unit::kg, -1)}));
+
+    EXPECT_THROW(quantity1 - quantity2, std::invalid_argument);
+}
+
+TEST(PhysicsQuantity, MultiplyTwoQuantiesWithThreeDifferentUnitsAndPowersAndUnitOrderThatResultInAScalar) {
+    PhysicsQuantity<double> quantity1(10, std::set<Unit>({Unit(Unit::m, 2), Unit(Unit::s, -5), Unit(Unit::kg, 3)}));
+    PhysicsQuantity<double> quantity2(20, std::set<Unit>({Unit(Unit::s, 5), Unit(Unit::m,-2), Unit(Unit::kg, -3)}));
+
+    PhysicsQuantity<double> result = quantity1 * quantity2;
+
+    EXPECT_EQ(result.value(), 200);
+    EXPECT_EQ(result.units().size(), 0);
 }
