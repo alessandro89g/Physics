@@ -40,6 +40,9 @@ $(TEST_OUT)/test_angle: $(TEST_DIR)/test_angle.cpp $(BUILD_DIR)/maths/angle.o
 $(TEST_OUT)/test_complex: $(TEST_DIR)/test_complex.cpp $(BUILD_DIR)/maths/complex.o
 	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_complex.cpp $(BUILD_DIR)/maths/complex.o ${GTEST_LIBS}
 
+$(TEST_OUT)/physics_units: $(TEST_DIR)/test_physics_units.cpp $(INCLUDE_DIR)/physics/physics_units.hpp
+	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_physics_units.cpp  ${GTEST_LIBS}
+
 tests_run: tests/*
 	# ./${TEST_OUT}/test_angle
 	./${TEST_OUT}/test_complex
