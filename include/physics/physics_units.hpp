@@ -1,8 +1,9 @@
 #ifndef PHYSICS_UNITS_HPP
 #define PHYSICS_UNITS_HPP
+#pragma once
 #include <stdexcept>
-#include <vector>
 #include <set>
+#include <unordered_map>
 #include <iostream>
 #include <string>
 
@@ -66,24 +67,24 @@ public:
         }
         return *this;
     }
-    std::optional<std::vector<Unit>> operator*(const Unit& other) const {
+    std::optional<std::set<Unit>> operator*(const Unit& other) const {
         if (_type == other._type && _power + other._power == 0) {
-            return std::optional<std::vector<Unit>>();
+            return std::optional<std::set<Unit>>();
         }
         if (_type == other._type) {
-            return std::optional<std::vector<Unit>>({Unit(_type, _power + other._power)});
+            return std::optional<std::set<Unit>>({Unit(_type, _power + other._power)});
         }
-        return std::optional<std::vector<Unit>>({*this, other});
+        return std::optional<std::set<Unit>>({*this, other});
     }
     
-    std::optional<std::vector<Unit>> operator/(const Unit& other) const {
+    std::optional<std::set<Unit>> operator/(const Unit& other) const {
         if (_type == other._type && _power - other._power == 0) {
-            return std::optional<std::vector<Unit>>();
+            return std::optional<std::set<Unit>>();
         }
         if (_type == other._type) {
-            return std::optional<std::vector<Unit>>({Unit(_type, _power - other._power)});
+            return std::optional<std::set<Unit>>({Unit(_type, _power - other._power)});
         }
-        return std::optional<std::vector<Unit>>({*this, Unit(other._type, -other._power)});
+        return std::optional<std::set<Unit>>({*this, Unit(other._type, -other._power)});
     }
 
     Unit& operator+=(const Unit& other) {
@@ -96,6 +97,24 @@ public:
     }
 
     std::string to_string() const;
+
+    bool operator<(const Unit& other) const {
+        if (_power == other._power && _type == other._type)
+            throw std::invalid_argument("Same power, same units. Cannot compare.");
+        return _type < other._type;
+    }
+
+    bool operator>(const Unit& other) const {
+        return !(other < *this || *this == other);
+    }
+
+    bool operator<=(const Unit& other) const {
+        return *this < other || *this == other;
+    }
+
+    bool operator>=(const Unit& other) const {
+        return *this > other || *this == other;
+    }
 
     friend std::ostream& operator<<(std::ostream& os, const Unit& unit) {
         os << unit.to_string();
@@ -205,68 +224,48 @@ std::string Unit::to_string() const {
     return unit;
 }
 
-std::vector<Unit> operator*(const std::vector<Unit>& a, const std::vector<Unit>& b) {
-    std::vector<Unit> result;
-    std::set<Unit::UnitType> types;
-    for (auto unit : a) {
-        types.insert(unit.getType());
+std::set<Unit> operator*(const std::set<Unit>& a, const std::set<Unit>& b) {
+    std::unordered_map<Unit::UnitType, short> units;
+    for (const auto& unit : a) {
+        units[unit.getType()] += unit.getPower();
     }
-    for (auto unit : b) {
-        types.insert(unit.getType());
+    for (const auto& unit : b) {
+        units[unit.getType()] += unit.getPower();
     }
-    for (auto type : types) {
-        short power = 0;
-        for (auto unit : a) {
-            if (unit.getType() == type) {
-                power += unit.getPower();
-            }
-        }
-        for (auto unit : b) {
-            if (unit.getType() == type) {
-                power += unit.getPower();
-            }
-        }
+
+    std::set<Unit> result;
+    for (const auto& [type, power] : units) {
         if (power != 0) {
-            result.push_back(Unit(type, power));
+            result.insert(Unit(type, power));
         }
     }
     return result;
 }
 
-std::vector<Unit> operator/(const std::vector<Unit>& a, const std::vector<Unit>& b) {
-    std::vector<Unit> result;
-    std::set<Unit::UnitType> types;
-    for (auto unit : a) {
-        types.insert(unit.getType());
+std::set<Unit> operator/(const std::set<Unit>& a, const std::set<Unit>& b) {
+    std::unordered_map<Unit::UnitType, short> units;
+    for (const auto& unit : a) {
+        units[unit.getType()] += unit.getPower();
     }
-    for (auto unit : b) {
-        types.insert(unit.getType());
+    for (const auto& unit : b) {
+        units[unit.getType()] -= unit.getPower();
     }
-    for (auto type : types) {
-        short power = 0;
-        for (auto unit : a) {
-            if (unit.getType() == type) {
-                power += unit.getPower();
-            }
-        }
-        for (auto unit : b) {
-            if (unit.getType() == type) {
-                power -= unit.getPower();
-            }
-        }
+
+    std::set<Unit> result;
+    for (const auto& [type, power] : units) {
         if (power != 0) {
-            result.push_back(Unit(type, power));
+            result.insert(Unit(type, power));
         }
     }
     return result;
 }
 
-std::vector<Unit>& operator*=(std::vector<Unit>& a, const std::vector<Unit>& b) {
+std::set<Unit>& operator*=(std::set<Unit>& a, const std::set<Unit>& b) {
     a = a * b;
     return a;
 }
 
-std::vector<Unit>& operator/=(std::vector<Unit>& a, const std::vector<Unit>& b) {
+std::set<Unit>& operator/=(std::set<Unit>& a, const std::set<Unit>& b) {
     a = a / b;
     return a;
 }
