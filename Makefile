@@ -43,8 +43,8 @@ $(TEST_OUT)/test_complex: $(TEST_DIR)/test_complex.cpp $(BUILD_DIR)/maths/comple
 $(TEST_OUT)/physics_units: $(TEST_DIR)/test_physics_units.cpp $(INCLUDE_DIR)/physics/physics_units.hpp
 	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_physics_units.cpp  ${GTEST_LIBS}
 
-$(TEST_OUT)/physics_quantity: $(TEST_DIR)/test_physics_quantity.cpp $(INCLUDE_DIR)/physics/physics_quantity.hpp
-	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_physics_quantity.cpp ${GTEST_LIBS}
+$(TEST_OUT)/physics_quantity: $(TEST_DIR)/test_physics_quantity.cpp $(INCLUDE_DIR)/physics/physics_quantity.hpp $(BUILD_DIR)/maths/complex.o
+	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_physics_quantity.cpp $(BUILD_DIR)/maths/complex.o ${GTEST_LIBS}
 
 
 tests_run: tests/*

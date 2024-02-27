@@ -60,6 +60,29 @@ public:
     friend std::ostream& operator<< (std::ostream& os, const Complex& c);
     friend std::istream& operator>> (std::istream& is, Complex& c);
 
+    inline bool operator== (const Complex& other) const {
+        return ( _r == other.real() && _i == other.img() );
+    }
+    inline bool operator!= (const Complex& other) const {
+        return !( *this == other );
+    }
+    inline bool operator< (const Complex& other) const {
+        return ( abs() < other.abs() );
+    }
+    inline bool operator> (const Complex& other) const {
+        return ( abs() > other.abs() );
+    }
+    inline bool operator<= (const Complex& other) const {
+        return ( abs() <= other.abs() );
+    }
+    inline bool operator>= (const Complex& other) const {
+        return ( abs() >= other.abs() );
+    }   
+    inline void set(std::pair<double,double> complex_pair) {
+        _r = complex_pair.first;
+        _i = complex_pair.second;
+    }
+
     inline void set_real(double re) {
         _r = re;
     }

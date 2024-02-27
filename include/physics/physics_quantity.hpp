@@ -5,6 +5,8 @@
 #include <set>
 #include <optional>
 #include "physics_units.hpp"
+#include "physics_constants.hpp"
+#include "../maths/complex.hpp"
 
 namespace Physics {
 
@@ -49,6 +51,14 @@ namespace Physics {
         bool operator>=(const PhysicsQuantity& other) const;
 
         std::string toString() const;
+        void eraseUnit(Unit::UnitType type) {
+            for (auto it = _units.begin(); it != _units.end(); ++it) {
+                if (it->getType() == type) {
+                    _units.erase(it);
+                    break;
+                }
+            }
+        }
     };
 
 
@@ -210,6 +220,110 @@ namespace Physics {
         return result.str();
     }
 //<-Other methods
+
+
+    template <Unit::UnitType type1, Unit::UnitType type2, typename T>
+    PhysicsQuantity<T> convert(const PhysicsQuantity<T>& quantity) {
+        throw std::invalid_argument("Conversion not implemented");
+    }
+
+    // write the prototype for partially specialized template function convert with type1 = MeV and type2 = fm
+    // and return type of PhysicsQuantity<T>
+    
+
+    template <>
+    PhysicsQuantity<double> convert<Unit::UnitType::MeV, Unit::UnitType::fm> (const PhysicsQuantity<double>& quantityMeV) {
+        auto quantity = quantityMeV;
+
+        short power = 0;
+        for (auto& unit : quantity.units()) {
+            if (unit.getType() == Unit::UnitType::MeV) {
+                power = unit.getPower();
+            }
+        }
+        if (power == 0)
+            return quantityMeV;
+
+        // To complete. Remove MeV from set of units and update fm if it is already in units or add it to the set
+        quantity.eraseUnit(Unit::UnitType::MeV);
+        quantity *= PhysicsQuantity(
+            1./ pow(Nuclear::hc, power),
+            Unit(Unit::UnitType::fm, -power)
+        );
+
+        return quantity;
+    }
+
+    template <>
+    PhysicsQuantity<Complex> convert<Unit::UnitType::MeV, Unit::UnitType::fm> (const PhysicsQuantity<Complex>& quantityMeV) {
+        auto quantity = quantityMeV;
+
+        short power = 0;
+        for (auto& unit : quantity.units()) {
+            if (unit.getType() == Unit::UnitType::MeV) {
+                power = unit.getPower();
+            }
+        }
+        if (power == 0)
+            return quantityMeV;
+
+        // To complete. Remove MeV from set of units and update fm if it is already in units or add it to the set
+        quantity.eraseUnit(Unit::UnitType::MeV);
+        quantity *= PhysicsQuantity(
+            Complex(1.)/ pow(Nuclear::hc, power),
+            Unit(Unit::UnitType::fm, -power)
+        );
+
+        return quantity;
+    }
+
+
+    template <>
+    PhysicsQuantity<double> convert<Unit::UnitType::fm, Unit::UnitType::MeV> (const PhysicsQuantity<double>& quantityfm) {
+        auto quantity = quantityfm;
+
+        short power = 0;
+        for (auto& unit : quantity.units()) {
+            if (unit.getType() == Unit::UnitType::fm) {
+                power = unit.getPower();
+            }
+        }
+        if (power == 0)
+            return quantityfm;
+
+        // To complete. Remove MeV from set of units and update fm if it is already in units or add it to the set
+        quantity.eraseUnit(Unit::UnitType::fm);
+        quantity *= PhysicsQuantity(
+            1./ pow(Nuclear::hc, power),
+            Unit(Unit::UnitType::MeV, -power)
+        );
+
+        return quantity;
+    }
+
+    template <>
+    PhysicsQuantity<Complex> convert<Unit::UnitType::fm, Unit::UnitType::MeV> (const PhysicsQuantity<Complex>& quantityfm) {
+        auto quantity = quantityfm;
+
+        short power = 0;
+        for (auto& unit : quantity.units()) {
+            if (unit.getType() == Unit::UnitType::fm) {
+                power = unit.getPower();
+            }
+        }
+        if (power == 0)
+            return quantity;
+
+        // To complete. Remove MeV from set of units and update fm if it is already in units or add it to the set
+        quantity.eraseUnit(Unit::UnitType::fm);
+        quantity *= PhysicsQuantity(
+            Complex(1.)/ pow(Nuclear::hc, power),
+            Unit(Unit::UnitType::MeV, -power)
+        );
+
+        return quantity;
+    }
 }
+
 
 #endif // PHYSICS_QUANTITY_HPP

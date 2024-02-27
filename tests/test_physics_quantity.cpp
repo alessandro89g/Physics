@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include "../include/physics/physics_quantity.hpp"
 
 using Physics::PhysicsQuantity;
@@ -351,4 +352,138 @@ TEST(PhysicsQuantity, MultiplyTwoQuantiesWithThreeDifferentUnitsAndPowersAndUnit
 
     EXPECT_EQ(result.value(), 200);
     EXPECT_EQ(result.units().size(), 0);
+}
+
+TEST(PhysicsQuantity, ConvertCrossSectionFromMeV2tofm_minus2) {
+    PhysicsQuantity<double> quantity(10, std::set<Unit>({Unit(Unit::MeV, -2), Unit(Unit::sr,-1)}));
+
+    PhysicsQuantity<double> result = Physics::convert<Unit::MeV, Unit::fm, double>(quantity);
+    double quantity_in_fm = quantity.value()*std::pow(Physics::Nuclear::hc,2);
+    EXPECT_EQ(result.value(), quantity_in_fm);
+    EXPECT_EQ(result.units().size(), 2);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit(Unit::fm, 2), Unit(Unit::sr,-1)})); 
+}
+
+TEST(PhysicsQuantity, ConvertCrossSectionFromfm2toMeV_minus2) {
+    PhysicsQuantity<double> quantity(10, std::set<Unit>({Unit(Unit::fm, 2), Unit(Unit::sr,-1)}));
+
+    PhysicsQuantity<double> result = Physics::convert<Unit::fm, Unit::MeV, double>(quantity);
+    double quantity_in_MeV = quantity.value()/std::pow(Physics::Nuclear::hc,2);
+    EXPECT_EQ(result.value(), quantity_in_MeV);
+    EXPECT_EQ(result.units().size(), 2);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit(Unit::MeV, -2), Unit(Unit::sr,-1)})); 
+}
+
+// prepare all the test with Complex numbers from my library (class Complex)
+
+TEST(PhysicsQuantity, AddTwoQuantitiesComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    PhysicsQuantity<Complex> quantity2(Complex(20, 30), Unit::m);
+
+    PhysicsQuantity<Complex> result = quantity1 + quantity2;
+    
+    EXPECT_EQ(result.value(), Complex(30, 50));
+    EXPECT_EQ(result.units().size(), 1);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
+}
+
+TEST(PhysicsQuantity, AddTwoQuantitiesDifferentUnitsComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    PhysicsQuantity<Complex> quantity2(Complex(20, 30), Unit::s);
+    
+    EXPECT_THROW(quantity1 + quantity2, std::invalid_argument);
+}
+
+TEST(PhysicsQuantity, AddingDoubleToQuantityComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    Complex quantity2 = 20;
+    
+    EXPECT_THROW(quantity1 + quantity2, std::invalid_argument);
+}
+
+TEST(PhysicsQuantity, SubtractTwoQuantitiesComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    PhysicsQuantity<Complex> quantity2(Complex(20, 30), Unit::m);
+
+    PhysicsQuantity<Complex> result = quantity1 - quantity2;
+    
+    EXPECT_EQ(result.value(), Complex(-10, -10));
+    EXPECT_EQ(result.units().size(), 1);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
+}
+
+TEST(PhysicsQuantity, SubtractTwoQuantitiesDifferentUnitsComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    PhysicsQuantity<Complex> quantity2(Complex(20, 30), Unit::s);
+    
+    EXPECT_THROW(quantity1 - quantity2, std::invalid_argument);
+}
+
+TEST(PhysicsQuantity, SubtractDoubleFromQuantityComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    Complex quantity2(20, 0);
+    
+    EXPECT_THROW(quantity1 - quantity2, std::invalid_argument);
+}
+
+TEST(PhysicsQuantity, MultiplyTwoQuantitiesComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    PhysicsQuantity<Complex> quantity2(Complex(20, 30), Unit::s);
+
+    PhysicsQuantity<Complex> result = quantity1 * quantity2;
+    
+    EXPECT_EQ(result.value(), Complex(-400, 700));
+    EXPECT_EQ(result.units().size(), 2);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m, Unit::s}));
+}
+
+TEST(PhysicsQuantity, MultiplyByScalarComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    double quantity2 = 20;
+
+    PhysicsQuantity<Complex> result = quantity1 * quantity2;
+
+    EXPECT_EQ(result.value(), Complex(200, 400));
+    EXPECT_EQ(result.units().size(), 1);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
+}
+
+TEST(PhysicsQuantity, DivideTwoQuantitiesComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    PhysicsQuantity<Complex> quantity2(Complex(20, 30), Unit::s);
+
+    PhysicsQuantity<Complex> result = quantity1 / quantity2;
+
+    EXPECT_EQ(result.value(), Complex(8./13, 1./13));
+    EXPECT_EQ(result.units().size(), 2);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m, Unit(Unit::s,-1)}));
+}   
+
+TEST(PhysicsQuantity, DivideByScalarComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+    double quantity2 = 20;
+
+    PhysicsQuantity<Complex> result = quantity1 / quantity2;
+
+    EXPECT_EQ(result.value(), Complex(0.5, 1));
+    EXPECT_EQ(result.units().size(), 1);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit(Unit::m)}));
+}
+
+TEST(PhysicsQuantity, UnaryMinusComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+
+    PhysicsQuantity<Complex> result = -quantity1;
+
+    EXPECT_EQ(result.value(), Complex(-10, -20));
+    EXPECT_EQ(result.units().size(), 1);
+    EXPECT_EQ(result.units(), std::set<Unit>({Unit::m}));
+}
+
+TEST(PhysicsQuantity, PrintQuantityComplex) {
+    PhysicsQuantity<Complex> quantity1(Complex(10, 20), Unit::m);
+
+    std::string result = quantity1.toString();
+
+    EXPECT_EQ(result, "(10,20) m");
 }

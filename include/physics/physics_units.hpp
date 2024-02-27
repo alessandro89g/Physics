@@ -51,6 +51,8 @@ public:
 
     UnitType getType() const { return _type; }
     short getPower() const { return _power; }
+    void setPower(short power) { _power = power; }
+    void setType(UnitType type) { _type = type; }
     
     constexpr bool operator==(Unit a) const { return _type == a._type && _power == a._power ; }
     constexpr bool operator!=(Unit a) const { return !(*this==a); }
