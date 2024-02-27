@@ -11,7 +11,6 @@ namespace Physics {
 class Unit {
 public:
     enum UnitType {
-        NoUnit,
         m,
         km,
         fm,
@@ -43,7 +42,11 @@ public:
 
     Unit() = delete;
     constexpr Unit(UnitType type) : _type(type), _power(1) {}
-    Unit(UnitType type, short power) : _type(power==0 ? UnitType::NoUnit : type), _power(power) {}
+    Unit(UnitType type, short power) : _type(type), _power(power) {
+        if (power == 0) {
+            throw std::invalid_argument("Power cannot be zero");
+        }
+    }
 
     UnitType getType() const { return _type; }
     short getPower() const { return _power; }
@@ -63,18 +66,24 @@ public:
         }
         return *this;
     }
-    std::vector<Unit> operator*(const Unit& other) const {
-        if (_type == other._type) {
-            return {Unit(_type, _power + other._power)};
+    std::optional<std::vector<Unit>> operator*(const Unit& other) const {
+        if (_type == other._type && _power + other._power == 0) {
+            return std::optional<std::vector<Unit>>();
         }
-        return {*this, other};
+        if (_type == other._type) {
+            return std::optional<std::vector<Unit>>({Unit(_type, _power + other._power)});
+        }
+        return std::optional<std::vector<Unit>>({*this, other});
     }
     
-    std::vector<Unit> operator/(const Unit& other) const {
-        if (_type == other._type) {
-            return {Unit(_type, _power - other._power)};
+    std::optional<std::vector<Unit>> operator/(const Unit& other) const {
+        if (_type == other._type && _power - other._power == 0) {
+            return std::optional<std::vector<Unit>>();
         }
-        return {*this, Unit(other._type, -other._power)};
+        if (_type == other._type) {
+            return std::optional<std::vector<Unit>>({Unit(_type, _power - other._power)});
+        }
+        return std::optional<std::vector<Unit>>({*this, Unit(other._type, -other._power)});
     }
 
     Unit& operator+=(const Unit& other) {
@@ -93,8 +102,6 @@ public:
         return os;
     }
 
-    
-
 private:
     UnitType _type;
     short _power;
@@ -110,9 +117,6 @@ std::string Unit::to_string() const {
     }
     std::string unit;
     switch (_type) {
-    case UnitType::NoUnit:
-        unit = "";
-        break;
     case UnitType::m:
         unit = "m";
         break;
@@ -199,6 +203,72 @@ std::string Unit::to_string() const {
         unit += "^" + std::to_string(_power);
     }
     return unit;
+}
+
+std::vector<Unit> operator*(const std::vector<Unit>& a, const std::vector<Unit>& b) {
+    std::vector<Unit> result;
+    std::set<Unit::UnitType> types;
+    for (auto unit : a) {
+        types.insert(unit.getType());
+    }
+    for (auto unit : b) {
+        types.insert(unit.getType());
+    }
+    for (auto type : types) {
+        short power = 0;
+        for (auto unit : a) {
+            if (unit.getType() == type) {
+                power += unit.getPower();
+            }
+        }
+        for (auto unit : b) {
+            if (unit.getType() == type) {
+                power += unit.getPower();
+            }
+        }
+        if (power != 0) {
+            result.push_back(Unit(type, power));
+        }
+    }
+    return result;
+}
+
+std::vector<Unit> operator/(const std::vector<Unit>& a, const std::vector<Unit>& b) {
+    std::vector<Unit> result;
+    std::set<Unit::UnitType> types;
+    for (auto unit : a) {
+        types.insert(unit.getType());
+    }
+    for (auto unit : b) {
+        types.insert(unit.getType());
+    }
+    for (auto type : types) {
+        short power = 0;
+        for (auto unit : a) {
+            if (unit.getType() == type) {
+                power += unit.getPower();
+            }
+        }
+        for (auto unit : b) {
+            if (unit.getType() == type) {
+                power -= unit.getPower();
+            }
+        }
+        if (power != 0) {
+            result.push_back(Unit(type, power));
+        }
+    }
+    return result;
+}
+
+std::vector<Unit>& operator*=(std::vector<Unit>& a, const std::vector<Unit>& b) {
+    a = a * b;
+    return a;
+}
+
+std::vector<Unit>& operator/=(std::vector<Unit>& a, const std::vector<Unit>& b) {
+    a = a / b;
+    return a;
 }
 
 } // namespace Physics
