@@ -21,6 +21,12 @@ TEST(Number, ConstructorWithNegativeInt) {
     EXPECT_THROW(Number n(-42), std::invalid_argument);
 }
 
+TEST(Number, ConstructorWithSetOfFactors) {
+    std::set<Factor> factors = {Factor(2, 1), Factor(3, 1), Factor(7, 2)};
+    Number n(factors);
+    EXPECT_EQ(n.get(), 2*3*49);
+}
+
 TEST(Number, Get) {
     Number n(42);
     EXPECT_EQ(n.get(), 42);
@@ -140,4 +146,42 @@ TEST(Number, CheckMaxUnsignedLongLongFactorization) {
         }
     }
     EXPECT_EQ(product, UINT_MAX);
+}
+
+TEST(Number, CheckCommonFactorizationOf2Numbers) {
+    Number n1(3*8*25*80*17*57*19);
+    Number n2(2*16*125*80*19*118);
+
+    for (const Factor& factor : n1.factors()) {
+        std::cout << factor.prime << "^" << factor.power << " ";
+    }
+    std::cout << std::endl;
+    for (const Factor& factor : n2.factors()) {
+        std::cout << factor.prime << "^" << factor.power << " ";
+    }
+    std::cout << std::endl;
+    
+    std::set<Factor> common = common_factors(n1, n2);
+    std::set<Factor> expected = {Factor(2, 7), Factor(5, 3), Factor(19, 1)};
+
+    for (const Factor& factor : common) {
+        std::cout << factor.prime << "^" << factor.power << " ";
+    }
+    std::cout << std::endl;
+
+    EXPECT_EQ(common, expected);    
+}
+
+TEST(Number, CheckStaticNumberFromFactors) {
+    std::set<Factor> factors = {Factor(2, 7), Factor(5, 3), Factor(19, 1)};
+    unsigned long long number = Number::numberFromFactors(factors);
+    EXPECT_EQ(number, 2*2*2*2*2*2*2*125*19);
+}
+
+TEST(Number, CheckGCD) {
+    Number n1(3*8*25*80*17*57*19);
+    Number n2(2*16*125*80*19*118);
+
+    Number GCD = gcd(n1, n2);
+    EXPECT_EQ(GCD.get(), std::pow(2,7)*pow(5,3)*19);
 }

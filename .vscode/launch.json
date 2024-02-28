@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/build/tests/numbers",
+            "program": "${workspaceFolder}/build/tests/lcm_gcd",
             "args": [],
             "cwd": "${workspaceFolder}"
         }

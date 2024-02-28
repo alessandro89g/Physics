@@ -15,6 +15,13 @@ Number::Number(double number) {
     throw std::invalid_argument("Cannot create a member of a Number from a double");
 }
 
+Number::Number(const std::set<Factor>& factors) : _factors(factors) {
+    _number = 1;
+    for (const Factor& factor : factors) {
+        _number *= pow(factor.prime, factor.power);
+    }
+}
+
 unsigned long long Number::get() const {
     return _number;
 }
@@ -88,8 +95,33 @@ std::ostream& operator<<(std::ostream& os, const Factor& factor) {
     return os;
 }
 
+
+
+std::set<Factor> common_factors(const Number& a, const Number& b) {
+    std::set<Factor> commonFactors;
+    std::set<Factor> aFactors = a.factors();
+    std::set<Factor> bFactors = b.factors();
+    for (const Factor& factor : aFactors) {
+        if (bFactors.count(factor) > 0) {
+            if (bFactors.find(factor)->power < factor.power) {
+                commonFactors.insert(*bFactors.find(factor));
+            } else {
+                commonFactors.insert(factor);
+            }
+        }
+    }
+    return commonFactors;
+}
+
+
+unsigned long long gcd(const Number& a, const Number& b) {
+    std::set<Factor> common = common_factors(a, b);
+    return Number::numberFromFactors(common);
+}
+
+
 // Initialize const std::vector<int> Number::sp_prime_numbers to be a vector containing the first 500 prime numbers
-const std::vector<int> Number::sp_prime_numbers = {
+const std::vector<unsigned int> Number::sp_prime_numbers = {
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 
     53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 
     127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 
