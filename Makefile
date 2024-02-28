@@ -55,6 +55,9 @@ $(TEST_OUT)/numbers: $(TEST_DIR)/test_number.cpp $(INCLUDE_DIR)/maths/number.hpp
 $(TEST_OUT)/lcm_gcd: $(TEST_DIR)/test_lcm_gcd.cpp $(INCLUDE_DIR)/maths/lcm_gcd.hpp
 	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_lcm_gcd.cpp $(BUILD_DIR)/maths/number.o ${GTEST_LIBS}
 
+$(TEST_OUT)/fraction: $(TEST_DIR)/test_fraction.cpp $(INCLUDE_DIR)/maths/lcm_gcd.hpp $(BUILD_DIR)/maths/fraction.o $(BUILD_DIR)/maths/number.o
+	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_fraction.cpp $(BUILD_DIR)/maths/fraction.o $(BUILD_DIR)/maths/number.o ${GTEST_LIBS}
+
 tests_run: tests/*
 	# ./${TEST_OUT}/test_angle
 	./${TEST_OUT}/test_complex

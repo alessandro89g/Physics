@@ -21,11 +21,20 @@ unsigned int gcd(const std::initializer_list<int>& Numbers) {
     std::set<unsigned int> numbers;
     
     for(int number: Numbers)
-        if (number!=0)
+        if (number!=0){
+            if (std::abs(number)==1)
+                return 1;
             numbers.insert(std::abs(number));
-    
+        }
+    if (numbers.size() == 0) {
+        return 1;
+    }
+    if (numbers.size() == 1) {
+        unsigned int n = *(numbers.begin());
+        return n;
+    }
 
-    unsigned long long result = 1;
+    unsigned int result = 1;
     const std::vector<unsigned int> primes = Number::first_20_000_primes();
 
     unsigned int n0 = *(numbers.begin());
@@ -70,8 +79,20 @@ unsigned int lcm(const std::initializer_list<int>& Numbers) {
     
     std::set<unsigned int> numbers;
     for (int number: Numbers)
-        if (number!=0)
+        if (number!=0 && number!=1 && number!=-1)
             numbers.insert(std::abs(number));
+    if (numbers.size() == 0) {
+        return 1;
+    }
+    if (numbers.size() == 1) {
+        return *(numbers.begin());
+    }
+    if (numbers.size() == 0) {
+        return 1;
+    }
+    if (numbers.size() == 1) {
+        return *(numbers.begin());
+    }
 
     unsigned int result = 1;
 

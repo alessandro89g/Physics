@@ -45,11 +45,11 @@ struct Factor {
 
 class Number {
 public:
-    Number() : _number(0) {}
-    Number(int number);
-    Number(unsigned long long number);
-    Number(double number);
-    Number(const std::set<Factor>& factors);
+    explicit Number() : _number(0) {}
+    explicit Number(int number);
+    explicit Number(unsigned long long number);
+    explicit Number(double number);
+    explicit Number(const std::set<Factor>& factors);
 
     unsigned long long get() const;
     void set(unsigned long long number);

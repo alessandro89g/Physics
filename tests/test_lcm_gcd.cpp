@@ -55,3 +55,11 @@ TEST(LCM, ThreeNumbers) {
     // 45  =       5^1 * 3^2
     EXPECT_EQ(lcm({210, 100, 45}), 7*5*5*3*3*2*2);
 }
+
+TEST(LCM, TwoNumbersOfWhichOneIsOne) {
+    EXPECT_EQ(lcm({1, 42}), 42);
+}
+
+TEST(GCD, TwoNumbersOfWhichOneIsOne) {
+    EXPECT_EQ(gcd({1, 42}), 1);
+}
