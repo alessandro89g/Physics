@@ -325,5 +325,15 @@ namespace Physics {
     }
 }
 
+/* template<class T>
+Physics::PhysicsQuantity<T> std::pow(const Physics::PhysicsQuantity<T>& quantity, int power) {
+    T value = std::pow(quantity.value(), power);
+    std::set<Physics::Unit> units = quantity.units();
+    for (Physics::Unit& u : units) {
+        u.setPower(u.getPower() * power);
+    }
+    return Physics::PhysicsQuantity<T>(value, units);
+} */
+
 
 #endif // PHYSICS_QUANTITY_HPP

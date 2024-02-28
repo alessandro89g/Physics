@@ -12,13 +12,13 @@ namespace Physics {
 class Unit {
 public:
     enum UnitType {
+        J,
+        eV,
+        MeV,
         m,
         km,
         fm,
         nm,
-        s,
-        ms,
-        ns,
         Hz,
         MHz,
         GHz,
@@ -28,9 +28,6 @@ public:
         C,
         K,
         F,
-        J,
-        eV,
-        MeV,
         rad,
         deg,
         sr,
@@ -38,7 +35,10 @@ public:
         Pa,
         T,
         mol,
-        cd
+        cd,
+        s,
+        ms,
+        ns
     };
 
     Unit() = delete;
