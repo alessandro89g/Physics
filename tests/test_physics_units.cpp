@@ -76,10 +76,8 @@ TEST(PhysicsUnits, MultiplicationSameUnit) {
     Unit u2(Unit::UnitType::m, 2);
     
     std::set<Unit> result_set = (u1 * u2).value();
-    std::vector<Unit> result(result_set.begin(), result_set.end());
-    ASSERT_EQ(result.size(), 1);
-    EXPECT_EQ(result[0].getType(), Unit::UnitType::m);
-    EXPECT_EQ(result[0].getPower(), 4);
+    std::set<Unit> expected = {Unit(Unit::UnitType::m, 4)};
+    EXPECT_EQ(result_set, expected);
 }
 
 TEST(PhysicsUnits, MultiplicationDifferentUnit) {
@@ -87,12 +85,8 @@ TEST(PhysicsUnits, MultiplicationDifferentUnit) {
     Unit u2(Unit::UnitType::s, 1);
 
     std::set<Unit> result_set = (u1 * u2).value();
-    std::vector<Unit> result(result_set.begin(), result_set.end());
-    ASSERT_EQ(result.size(), 2);
-    EXPECT_EQ(result[0].getType(), Unit::UnitType::m);
-    EXPECT_EQ(result[0].getPower(), 2);
-    EXPECT_EQ(result[1].getType(), Unit::UnitType::s);
-    EXPECT_EQ(result[1].getPower(), 1);
+    std::set<Unit> expected = {Unit(Unit::UnitType::m, 2), Unit(Unit::UnitType::s, 1)};
+    EXPECT_EQ(result_set, expected);
 }
 
 TEST(PhysicsUnits, DivisionSameUnit) {
@@ -100,10 +94,8 @@ TEST(PhysicsUnits, DivisionSameUnit) {
     Unit u2(Unit::UnitType::m, 1);
 
     std::set<Unit> result_set = (u1 / u2).value();
-    std::vector<Unit> result(result_set.begin(), result_set.end());
-    ASSERT_EQ(result.size(), 1);
-    EXPECT_EQ(result[0].getType(), Unit::UnitType::m);
-    EXPECT_EQ(result[0].getPower(), 1);
+    std::set<Unit> expected = {Unit(Unit::UnitType::m, 1)};
+    EXPECT_EQ(result_set, expected);
 }
 
 TEST(PhysicsUnits, DivisionDifferentUnit) {
@@ -111,12 +103,8 @@ TEST(PhysicsUnits, DivisionDifferentUnit) {
     Unit u2(Unit::UnitType::s, 1);
 
     std::set<Unit> result_set = (u1 / u2).value();
-    std::vector<Unit> result(result_set.begin(), result_set.end());
-    ASSERT_EQ(result.size(), 2);
-    EXPECT_EQ(result[0].getType(), Unit::UnitType::m);
-    EXPECT_EQ(result[0].getPower(), 2);
-    EXPECT_EQ(result[1].getType(), Unit::UnitType::s);
-    EXPECT_EQ(result[1].getPower(), -1);
+    std::set<Unit> expected = {Unit(Unit::UnitType::m, 2), Unit(Unit::UnitType::s, -1)};
+    EXPECT_EQ(result_set, expected);
 }
 
 TEST(PhysicsUnits, DivisionSameUnitSamePower) {
@@ -147,14 +135,8 @@ TEST(PhysicsUnit, UnitsVectorsMultiplication) {
     std::set<Unit> u2 = {Unit(Unit::UnitType::m, 1), Unit(Unit::UnitType::s, 3), Unit(Unit::UnitType::kg)};
 
     std::set<Unit> result_set = u1*u2;
-    std::vector<Unit> result(result_set.begin(), result_set.end()); 
-    ASSERT_EQ(result.size(), 3);
-    EXPECT_EQ(result[0].getType(), Unit::UnitType::m);
-    EXPECT_EQ(result[0].getPower(), 3);
-    EXPECT_EQ(result[1].getType(), Unit::UnitType::s);
-    EXPECT_EQ(result[1].getPower(), 4);
-    EXPECT_EQ(result[2].getType(), Unit::UnitType::kg);
-    EXPECT_EQ(result[2].getPower(), 1);
+    std::set<Unit> expected = {Unit(Unit::UnitType::m, 3), Unit(Unit::UnitType::s, 4), Unit(Unit::UnitType::kg)};
+    EXPECT_EQ(result_set, expected);
 }
 
 TEST(PhysicsUnit, UnitsVectorsDivision) {
@@ -162,14 +144,8 @@ TEST(PhysicsUnit, UnitsVectorsDivision) {
     std::set<Unit> u2 = {Unit(Unit::UnitType::m, 1), Unit(Unit::UnitType::s, 3), Unit(Unit::UnitType::kg)};
 
     std::set<Unit> result_set = u1/u2;
-    std::vector<Unit> result(result_set.begin(), result_set.end()); 
-    ASSERT_EQ(result.size(), 3);
-    EXPECT_EQ(result[0].getType(), Unit::UnitType::m);
-    EXPECT_EQ(result[0].getPower(), 1);
-    EXPECT_EQ(result[1].getType(), Unit::UnitType::s);
-    EXPECT_EQ(result[1].getPower(), -2);
-    EXPECT_EQ(result[2].getType(), Unit::UnitType::kg);
-    EXPECT_EQ(result[2].getPower(), -1);
+    std::set<Unit> expected = {Unit(Unit::UnitType::m, 1), Unit(Unit::UnitType::s, -2), Unit(Unit::UnitType::kg, -1)};
+    EXPECT_EQ(result_set, expected);
 }
 
 TEST(PhysicsUnit, UnitsVectorsMultiplicationNoResult) {

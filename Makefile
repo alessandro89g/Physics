@@ -49,6 +49,9 @@ $(TEST_OUT)/physics_quantity: $(TEST_DIR)/test_physics_quantity.cpp $(INCLUDE_DI
 $(TEST_OUT)/physics_constants_quantities: $(TEST_DIR)/test_physics_constants_quantities.cpp $(INCLUDE_DIR)/physics/physics_constants_quantities.hpp $(INCLUDE_DIR)/physics/physics_units.hpp $(BUILD_DIR)/maths/complex.o
 	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_physics_constants_quantities.cpp $(BUILD_DIR)/maths/complex.o ${GTEST_LIBS}
 
+$(TEST_OUT)/numbers: $(TEST_DIR)/test_number.cpp $(INCLUDE_DIR)/maths/number.hpp $(BUILD_DIR)/maths/number.o
+	$(CC) $(CFLAGS) -o $@ $(TEST_DIR)/test_number.cpp $(BUILD_DIR)/maths/number.o ${GTEST_LIBS}
+
 tests_run: tests/*
 	# ./${TEST_OUT}/test_angle
 	./${TEST_OUT}/test_complex
