@@ -182,6 +182,6 @@ TEST(Number, CheckGCD) {
     Number n1(3*8*25*80*17*57*19);
     Number n2(2*16*125*80*19*118);
 
-    Number GCD = gcd(n1, n2);
+    Number GCD(gcd(n1,n2));
     EXPECT_EQ(GCD.get(), std::pow(2,7)*pow(5,3)*19);
 }

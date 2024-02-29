@@ -37,7 +37,7 @@ std::set<Factor> Number::factors() const {
 
 void Number::factorize() {
     _factors.clear();
-    int prime_index = 0;
+    uint prime_index = 0;
     unsigned long long number = _number;
     while(number>1ull && prime_index < sp_prime_numbers.size()) {
         int power = 0;

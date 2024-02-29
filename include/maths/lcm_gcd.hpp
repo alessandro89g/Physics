@@ -99,7 +99,7 @@ unsigned int lcm(const std::initializer_list<int>& Numbers) {
     const std::vector<unsigned int> primes = Number::first_20_000_primes();
     unsigned int max = 1.*(*(numbers.rbegin()))/2.0+1;
 
-    for (int i=0; i<max; i++) {
+    for (uint i=0; i<max; i++) {
         unsigned int prime = primes[i];
         unsigned short power = 0;
 
